@@ -1,0 +1,17 @@
+# AITechPrep
+
+> A visual-first technical interview learning site with direct answers, accessible visual explanations, practical examples, trade-offs, and a structured AI engineering learning roadmap.
+
+AITechPrep publishes a focused library covering LLMs and generative AI, machine learning, MLOps, Python, data engineering, and system design. Each interview guide starts with a concise answer and distinguishes established concepts from limitations and context-dependent choices.
+
+## Core pages
+
+- [Question bank](/questions): interview answers and detailed learning guides.
+- [AI Engineer learning roadmap](/roadmaps/ai-engineer-foundations): seven connected learning stages and topic pages.
+- [Blog and news](/blog): technical explainers and dated reporting with source links.
+- [About AITechPrep](/about): editorial and learning approach.
+
+## Content notes
+
+- News claims include dates and source references. An eligibility estimate is not a confirmed outcome.
+- Structured data is intended to describe visible page content; it is not a guarantee of inclusion or ranking in search or answer engines.
