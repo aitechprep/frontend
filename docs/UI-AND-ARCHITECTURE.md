@@ -85,7 +85,9 @@ Current CSS custom properties in `:root`:
 - Follow the current route families: `/`, `/questions`, `/questions/:categorySlug`, `/questions/:categorySlug/:questionSlug`, `/saved`, `/roadmaps`, `/roadmaps/:roadmapSlug`, `/roadmaps/:roadmapSlug/:topicSlug`, `/blog`, `/blog/:articleSlug`, `/search`, and `/about`.
 - Use the existing not-found page for unknown slugs/routes. Avoid duplicate routing systems or full-page reload navigation.
 - Production builds use `scripts/prerender.mjs` to emit route-specific HTML for every public content route. Keep its route list derived from the typed feature datasets and continue hydrating that HTML from `src/main.tsx`.
+- The same build emits a branded, noindex `404.html`; the static host must serve it with a real HTTP 404 response.
 - `VITE_SITE_URL` must be set to the HTTPS origin of the purchased production domain before deployment; it drives absolute canonical URLs and the generated sitemap. Browser-local saves and on-site search are noindex and excluded from the sitemap.
+- `public/favicon.svg`, linked PNG/app icons, `site.webmanifest`, and the optimized `og-image.png` are the brand assets for browsers, install surfaces, and social previews. Update metadata and documentation if those paths change.
 - `public/llms.txt` is a small, human-readable content map for AI crawlers; keep it factual and aligned with routes and current editorial policy. It is an informal convention, not a ranking control.
 - `PageMeta` owns page titles, descriptions, canonical and social metadata. Use JSON-LD only when it accurately reflects visible page content: `FAQPage` for the displayed question/answers, `Article`/`NewsArticle` for editorial pages, and shared breadcrumb data.
 
@@ -97,6 +99,7 @@ Current CSS custom properties in `:root`:
 - Question detail content has a different purpose and shape than roadmap topic content. Do not collapse these into one generic model.
 - Article `contentType` distinguishes evergreen technical blogs from industry news. News needs accurate published/updated dates, source references, and a visible News tag; carefully distinguish announced eligibility from confirmed outcomes.
 - `src/state.tsx` provides the saved-question context, `src/saves.ts` exposes its hook/context, and `src/App.tsx` places the provider around app content. Keep storage logic out of page components.
+- `index.html` currently loads Microsoft Clarity. Treat it as a third-party analytics vendor when preparing privacy disclosures and reviewing consent obligations for intended markets.
 - Preserve the existing localStorage key `modelprep:savedQuestions:v1`; changing the brand must not silently erase existing bookmarks. If a key migration is explicitly needed, read and migrate old values safely.
 - Search is cross-content: questions, roadmap topics, and articles. Keep newly added searchable content represented in the corresponding data model and search logic.
 

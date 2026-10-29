@@ -73,6 +73,17 @@ describe('AITechPrep journeys', () => {
     expect(document.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow')
   })
 
+  it('marks the custom not-found page as non-indexable', () => {
+    renderAt('/not-a-real-route')
+    expect(document.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow')
+  })
+
+  it('sets large-image social metadata on public article pages', () => {
+    renderAt('/blog/rag-through-a-practical-example')
+    expect(document.querySelector('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image')
+    expect(document.querySelector('meta[property="og:image"]')).toHaveAttribute('content', expect.stringContaining('/og-image.png'))
+  })
+
   it('renders the accessible mobile roadmap outline and opens a topic', () => {
     renderAt('/roadmaps/ai-engineer-foundations')
     const stages = screen.getByRole('list', { name: /roadmap learning stages/i })

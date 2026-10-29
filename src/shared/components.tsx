@@ -23,11 +23,16 @@ export function PageMeta({ title, description, noindex = false, structuredData }
     <meta property="og:title" content={`${title} | AITechPrep`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={openGraphType} />
-    {canonical.startsWith('http') && <meta property="og:url" content={canonical} />}
-    <meta name="twitter:card" content="summary" />
+    {canonical.startsWith('http') && !noindex && <meta property="og:url" content={canonical} />}
+    {canonical.startsWith('http') && !noindex && <>
+      <meta property="og:image" content={absoluteSiteUrl('/og-image.png')} />
+      <meta property="og:image:alt" content="AITechPrep — clear concepts, confident interviews." />
+    </>}
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${title} | AITechPrep`} />
     <meta name="twitter:description" content={description} />
-    {canonical.startsWith('http') && <link rel="canonical" href={canonical} />}
+    {canonical.startsWith('http') && !noindex && <meta name="twitter:image" content={absoluteSiteUrl('/og-image.png')} />}
+    {canonical.startsWith('http') && !noindex && <link rel="canonical" href={canonical} />}
     {structuredData && <JsonLd data={structuredData} />}
   </>
 }
@@ -128,5 +133,5 @@ export function ArticleCard({ article }: { article: Article }) {
 }
 
 export function NotFoundPage() {
-  return <div className="page-width not-found"><PageMeta title="Page not found" description="The requested AITechPrep page could not be found." /><span className="empty-icon"><Compass size={24} /></span><p className="eyebrow">404 · NOT FOUND</p><h1>This page isn't on the map.</h1><p>The link may be out of date, or this page may have moved.</p><Link to="/" className="button button-primary">Go to the home page <ArrowRight size={16} /></Link></div>
+  return <div className="page-width not-found"><PageMeta title="Page not found" description="The requested AITechPrep page could not be found." noindex /><span className="empty-icon"><Compass size={24} /></span><p className="eyebrow">404 · NOT FOUND</p><h1>This page isn't on the map.</h1><p>The link may be out of date, or this page may have moved.</p><Link to="/" className="button button-primary">Go to the home page <ArrowRight size={16} /></Link></div>
 }

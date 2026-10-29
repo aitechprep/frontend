@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
@@ -49,13 +49,22 @@ try {
     const metadataPattern = /<title>[\s\S]*?<\/title>|<meta\s+[^>]*\/?>|<link rel="canonical"[^>]*\/?>/g
     const routeMetadata = markup.match(metadataPattern) ?? []
     const pageMarkup = markup.replace(metadataPattern, '')
-    const cleanTemplate = template.replace(/<title>[\s\S]*?<\/title>|<meta name="(?:description|twitter:card|twitter:title|twitter:description)"[^>]*\/?>|<meta property="og:(?:title|description|type|url)"[^>]*\/?>/g, '')
+    const cleanTemplate = template.replace(/<title>[\s\S]*?<\/title>|<meta name="(?:description|twitter:card|twitter:title|twitter:description|twitter:image)"[^>]*\/?>|<meta property="og:(?:title|description|type|url|image|image:alt)"[^>]*\/?>/g, '')
       .replace('</head>', `${routeMetadata.join('\n')}</head>`)
     const html = cleanTemplate.replace('<div id="root"></div>', `<div id="root" data-prerendered-path="${page.path}">${pageMarkup}</div>`)
     const target = page.path === '/' ? path.join(root, 'dist', 'index.html') : path.join(root, 'dist', page.path.slice(1), 'index.html')
     await mkdir(path.dirname(target), { recursive: true })
     await writeFile(target, html)
   }
+
+  const missingRoute = '/__aitechprep_missing_route__'
+  const notFoundMarkup = renderToString(React.createElement(MemoryRouter, { initialEntries: [missingRoute] }, React.createElement(App)))
+  const metadataPattern = /<title>[\s\S]*?<\/title>|<meta\s+[^>]*\/?>|<link rel="canonical"[^>]*\/?>/g
+  const notFoundMetadata = notFoundMarkup.match(metadataPattern) ?? []
+  const cleanTemplate = template.replace(/<title>[\s\S]*?<\/title>|<meta name="(?:description|twitter:card|twitter:title|twitter:description|twitter:image)"[^>]*\/?>|<meta property="og:(?:title|description|type|url|image|image:alt)"[^>]*\/?>/g, '')
+    .replace('</head>', `${notFoundMetadata.join('\n')}</head>`)
+  const notFoundPage = cleanTemplate.replace('<div id="root"></div>', `<div id="root">${notFoundMarkup.replace(metadataPattern, '')}</div>`)
+  await writeFile(path.join(root, 'dist', '404.html'), notFoundPage)
 
   const robotsPath = path.join(root, 'dist', 'robots.txt')
   let robots = 'User-agent: *\nAllow: /\nDisallow: /saved\nDisallow: /search\n'
@@ -68,6 +77,7 @@ try {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`
     await writeFile(path.join(root, 'dist', 'sitemap.xml'), sitemap)
   } else {
+    await rm(path.join(root, 'dist', 'sitemap.xml'), { force: true })
     console.warn('VITE_SITE_URL is not set; route-specific pages were prerendered, but sitemap.xml was not generated and canonical URLs are omitted. Set the production site origin to enable them.')
   }
   await writeFile(robotsPath, robots)
